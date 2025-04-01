@@ -11,7 +11,7 @@ export const ChatProvider = ({ children, currentUser }) => {
   useEffect(() => {
     if (!currentUser) return;
 
-    // Connect to the Socket.IO server
+    // Connect to the Socket.IO serversa
     const newSocket = io("http://localhost:5000"); // Replace with your backend URL
     setSocket(newSocket);
 

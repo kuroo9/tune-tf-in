@@ -4,27 +4,39 @@ import { SongData } from "../context/Song";
 import AlbumItem from "../components/AlbumItem";
 import SongItem from "../components/SongItem";
 import styled, { ThemeProvider, createGlobalStyle } from "styled-components";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: ${props => props.theme.bg};
     color: ${props => props.theme.text};
     transition: background-color 0.3s, color 0.3s;
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      background: ${props => props.theme.secondary};
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: ${props => props.theme.accent};
+      border-radius: 4px;
+    }
   }
 `;
 
-const darkGreenTheme = {
-  bg: "#000",
-  text: "#fff",
-  primary: "#28a745",
-  secondary: "#228B22",
+const blackGreyTheme = {
+  bg: "#0a0a0a",
+  secondary: "#1a1a1a",
+  text: "#ffffff",
+  accent: "#2d2d2d",
+  primary: "#3a3a3a",
+  glow: "rgba(255, 255, 255, 0.2)",
+  mutedText: "#a0a0a0",
 };
 
 const Container = styled.div`
@@ -36,6 +48,13 @@ const SectionTitle = styled(motion.h1)`
   font-weight: bold;
   margin: 24px 0 16px;
   text-align: center;
+  color: ${props => props.theme.text};
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+    text-shadow: 0 0 10px ${props => props.theme.glow};
+  }
 `;
 
 const ItemList = styled(motion.div)`
@@ -43,6 +62,19 @@ const ItemList = styled(motion.div)`
   overflow-x: auto;
   scroll-behavior: smooth;
   padding: 0 16px;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme.accent};
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: ${props => props.theme.secondary};
+  }
 `;
 
 // Default images for fallback
@@ -53,27 +85,27 @@ const Home = () => {
   const { songs, albums } = SongData();
 
   return (
-    <ThemeProvider theme={darkGreenTheme}>
+    <ThemeProvider theme={blackGreyTheme}>
       <GlobalStyle />
       <Layout>
         <Container>
           {/* Featured Charts Section */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <SectionTitle
               initial={{ y: -50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
             >
               Featured Charts
             </SectionTitle>
             <ItemList
               initial={{ x: -50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
             >
               {albums.length > 0 ? (
                 albums.map((album, i) => {
@@ -89,28 +121,28 @@ const Home = () => {
                   );
                 })
               ) : (
-                <p>No albums available</p>
+                <p style={{ color: blackGreyTheme.mutedText }}>No albums available</p>
               )}
             </ItemList>
           </motion.div>
 
           {/* Today's Biggest Hits Section */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
           >
             <SectionTitle
               initial={{ y: -50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
             >
               Today's Biggest Hits
             </SectionTitle>
             <ItemList
               initial={{ x: -50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
             >
               {songs.length > 0 ? (
                 songs.map((song, i) => {
@@ -126,7 +158,7 @@ const Home = () => {
                   );
                 })
               ) : (
-                <p>No songs available</p>
+                <p style={{ color: blackGreyTheme.mutedText }}>No songs available</p>
               )}
             </ItemList>
           </motion.div>

@@ -39,11 +39,15 @@ const PlayerContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: ${props => props.theme.text};
+  color: ${(props) => props.theme.text};
   padding: 0 24px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  position: relative;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 
   &::before {
     content: '';
@@ -81,12 +85,12 @@ const SongDetails = styled.div`
       h3 {
         font-size: 14px;
         margin: 0;
-        color: ${props => props.theme.text}; /* White text */
+        color: ${(props) => props.theme.text}; /* White text */
       }
 
       p {
         font-size: 10px;
-        color: ${props => props.theme.text}; /* Changed from secondary to text (white) */
+        color: ${(props) => props.theme.text}; /* Changed from secondary to text (white) */
         margin-top: 2px;
       }
     }
@@ -110,10 +114,10 @@ const AudioControls = styled.div`
       appearance: none;
       width: 8px;
       height: 8px;
-      background: ${props => props.theme.primary};
+      background: ${(props) => props.theme.primary};
       border-radius: 50%;
       cursor: pointer;
-      box-shadow: 0 0 6px ${props => props.theme.primary};
+      box-shadow: 0 0 6px ${(props) => props.theme.primary};
     }
   }
 
@@ -125,18 +129,18 @@ const AudioControls = styled.div`
     button {
       background: transparent;
       border: none;
-      color: ${props => props.theme.text};
+      color: ${(props) => props.theme.text};
       font-size: 18px;
       cursor: pointer;
       transition: color 0.3s;
 
       &:hover {
-        color: ${props => props.theme.primary};
+        color: ${(props) => props.theme.primary};
       }
     }
 
     .play-pause {
-      background: ${props => props.theme.primary};
+      background: ${(props) => props.theme.primary};
       color: #000;
       border-radius: 50%;
       width: 36px;
@@ -171,10 +175,10 @@ const VolumeControl = styled.div`
       appearance: none;
       width: 8px;
       height: 8px;
-      background: ${props => props.theme.primary};
+      background: ${(props) => props.theme.primary};
       border-radius: 50%;
       cursor: pointer;
-      box-shadow: 0 0 6px ${props => props.theme.primary};
+      box-shadow: 0 0 6px ${(props) => props.theme.primary};
     }
   }
 `;
@@ -195,10 +199,14 @@ const Player = () => {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
 
+  // Fetch song only when selectedSong changes
   useEffect(() => {
-    fetchSingleSong?.();
-  }, [selectedSong, fetchSingleSong]);
+    if (selectedSong) {
+      fetchSingleSong?.();
+    }
+  }, [selectedSong]);
 
+  // Handle audio metadata and progress updates
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -260,7 +268,7 @@ const Player = () => {
               {/* Song Details */}
               <SongDetails>
                 <img
-                  src={song.thumbnail?.url || '/fallback-image.jpg'}
+                  src={song.thumbnail?.url || "/fallback-image.jpg"}
                   alt={song.title || "Current track"}
                 />
                 <div className="info">
@@ -271,7 +279,11 @@ const Player = () => {
 
               {/* Audio Controls */}
               <AudioControls>
-                <audio ref={audioRef} src={song.audio.url} {...(isPlaying ? { autoPlay: true } : {})} />
+                <audio
+                  ref={audioRef}
+                  src={song.audio.url}
+                  {...(isPlaying ? { autoPlay: true } : {})}
+                />
 
                 <input
                   type="range"

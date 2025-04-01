@@ -4,6 +4,131 @@ import { Link, useNavigate } from "react-router-dom";
 import { SongData } from "../context/Song";
 import { MdDelete, MdAdd, MdEdit } from "react-icons/md";
 import { toast } from "react-toastify";
+import styled, { keyframes } from "styled-components";
+
+// Glow Animation
+const glow = keyframes`
+  0% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+  }
+`;
+
+// Styled Components
+const Container = styled.div`
+  padding: 1rem;
+  background: #121212;
+  color: #eaeaea;
+  min-height: 100vh;
+`;
+
+const FormContainer = styled.div`
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  }
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #2b2b2b;
+  color: #eaeaea;
+  font-size: 0.875rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:focus {
+    border-color: #00ff00;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+  }
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #2b2b2b;
+  color: #eaeaea;
+  font-size: 0.875rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:focus {
+    border-color: #00ff00;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+  }
+`;
+
+const Button = styled.button`
+  padding: 0.5rem 1rem;
+  background: #333;
+  color: #eaeaea;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    background: #444;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
+const Card = styled.div`
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  }
+`;
+
+const CardImage = styled.img`
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+`;
+
+const CardTitle = styled.h3`
+  font-size: 0.875rem;
+  font-weight: bold;
+  color: #eaeaea;
+  margin-bottom: 0.25rem;
+`;
+
+const CardText = styled.p`
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+`;
 
 const Admin = () => {
   const { user } = UserData();
@@ -109,80 +234,70 @@ const Admin = () => {
   };
 
   return (
-    <div className="p-4 bg-[#121212] text-[#EAEAEA] min-h-screen">
+    <Container>
       {/* Navigation */}
       <Link to="/" className="text-[#888888] hover:underline">
         Go to home page
       </Link>
 
       {/* Add Album Form */}
-      <div className="mt-6">
-        <h2 className="text-xl font-bold mb-4 text-[#CCCCCC]">Add Album</h2>
-        <form onSubmit={addAlbumHandler} className="space-y-4">
-          <input
+      <FormContainer>
+        <h2 className="text-lg font-bold mb-2 text-[#CCCCCC]">Add Album</h2>
+        <form onSubmit={addAlbumHandler} className="space-y-2">
+          <Input
             type="text"
             placeholder="Title"
             value={albumTitle}
             onChange={(e) => setAlbumTitle(e.target.value)}
             required
-            className="block w-full p-2 border rounded bg-[#2B2B2B] text-[#EAEAEA] placeholder-[#888]"
           />
-          <input
+          <Input
             type="text"
             placeholder="Description"
             value={albumDescription}
             onChange={(e) => setAlbumDescription(e.target.value)}
             required
-            className="block w-full p-2 border rounded bg-[#2B2B2B] text-[#EAEAEA] placeholder-[#888]"
           />
-          <input
+          <Input
             type="file"
             onChange={(e) => fileChangeHandler(e, setAlbumFile)}
             required
-            className="block w-full p-2 border rounded bg-[#2B2B2B] text-[#EAEAEA] placeholder-[#888]"
           />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-[#333333] text-[#EAEAEA] rounded"
-          >
+          <Button type="submit">
             {loading ? "Please Wait..." : "Add Album"}
-          </button>
+          </Button>
         </form>
-      </div>
+      </FormContainer>
 
       {/* Add Song Form */}
-      <div className="mt-6">
-        <h2 className="text-xl font-bold mb-4 text-[#CCCCCC]">Add Song</h2>
-        <form onSubmit={addSongHandler} className="space-y-4">
-          <input
+      <FormContainer>
+        <h2 className="text-lg font-bold mb-2 text-[#CCCCCC]">Add Song</h2>
+        <form onSubmit={addSongHandler} className="space-y-2">
+          <Input
             type="text"
             placeholder="Title"
             value={songTitle}
             onChange={(e) => setSongTitle(e.target.value)}
             required
-            className="block w-full p-2 border rounded bg-[#2B2B2B] text-[#EAEAEA] placeholder-[#888]"
           />
-          <input
+          <Input
             type="text"
             placeholder="Description"
             value={songDescription}
             onChange={(e) => setSongDescription(e.target.value)}
             required
-            className="block w-full p-2 border rounded bg-[#2B2B2B] text-[#EAEAEA] placeholder-[#888]"
           />
-          <input
+          <Input
             type="text"
             placeholder="Singer"
             value={songSinger}
             onChange={(e) => setSongSinger(e.target.value)}
             required
-            className="block w-full p-2 border rounded bg-[#2B2B2B] text-[#EAEAEA] placeholder-[#888]"
           />
-          <select
+          <Select
             value={songAlbum}
             onChange={(e) => setSongAlbum(e.target.value)}
             required
-            className="block w-full p-2 border rounded bg-[#2B2B2B] text-[#EAEAEA] placeholder-[#888]"
           >
             <option value="">Choose Album</option>
             {albums &&
@@ -191,97 +306,67 @@ const Admin = () => {
                   {e.title}
                 </option>
               ))}
-          </select>
-          <input
+          </Select>
+          <Input
             type="file"
             onChange={(e) => fileChangeHandler(e, setSongFile)}
             required
-            className="block w-full p-2 border rounded bg-[#2B2B2B] text-[#EAEAEA] placeholder-[#888]"
           />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-[#333333] text-[#EAEAEA] rounded"
-          >
+          <Button type="submit">
             {loading ? "Please Wait..." : "Add Song"}
-          </button>
+          </Button>
         </form>
-      </div>
+      </FormContainer>
 
       {/* Display Added Albums */}
-      <div className="mt-8">
-        <h2 className="text-xl font-bold mb-4 text-[#CCCCCC]">Added Albums</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="mt-4">
+        <h2 className="text-lg font-bold mb-2 text-[#CCCCCC]">Added Albums</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
           {albums &&
             albums.map((e, i) => (
-              <div
-                key={i}
-                className="bg-[#2B2B2B] p-4 rounded-lg flex flex-col items-center space-y-2"
-              >
+              <Card key={i}>
                 {e.thumbnail && (
-                  <img
-                    src={e.thumbnail.url}
-                    alt={e.title}
-                    className="w-32 h-32 object-cover rounded"
-                  />
+                  <CardImage src={e.thumbnail.url} alt={e.title} />
                 )}
-                <p className="font-bold text-[#EAEAEA]">{e.title}</p>
-                <p className="text-[#888]">{e.description}</p>
-                <button
-                  onClick={() => deleteAlbumHandler(e._id)}
-                  className="px-3 py-1 bg-[#333333] text-[#EAEAEA] rounded"
-                >
+                <CardTitle>{e.title}</CardTitle>
+                <CardText>{e.description}</CardText>
+                <Button onClick={() => deleteAlbumHandler(e._id)}>
                   Delete
-                </button>
-              </div>
+                </Button>
+              </Card>
             ))}
         </div>
       </div>
 
       {/* Display Added Songs */}
-      <div className="mt-8">
-        <h2 className="text-xl font-bold mb-4 text-[#CCCCCC]">Added Songs</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="mt-4">
+        <h2 className="text-lg font-bold mb-2 text-[#CCCCCC]">Added Songs</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
           {songs &&
             songs.map((e, i) => (
-              <div
-                key={i}
-                className="bg-[#2B2B2B] p-4 rounded-lg flex flex-col items-center space-y-2"
-              >
+              <Card key={i}>
                 {e.thumbnail ? (
-                  <img
-                    src={e.thumbnail.url}
-                    alt={e.title}
-                    className="w-32 h-32 object-cover rounded"
-                  />
+                  <CardImage src={e.thumbnail.url} alt={e.title} />
                 ) : (
                   <>
-                    <input
+                    <Input
                       type="file"
                       onChange={(e) => fileChangeHandler(e, setSongFile)}
-                      className="block w-full p-2 border rounded bg-[#2B2B2B] text-[#EAEAEA] placeholder-[#888]"
                     />
-                    <button
-                      onClick={() => addThumbnailHandler(e._id)}
-                      className="px-3 py-1 bg-[#333333] text-[#EAEAEA] rounded"
-                    >
+                    <Button onClick={() => addThumbnailHandler(e._id)}>
                       Add Thumbnail
-                    </button>
+                    </Button>
                   </>
                 )}
-                <p className="font-bold text-[#EAEAEA]">{e.title}</p>
-                <p className="text-[#888]">{e.singer}</p>
-                <p className="text-[#888]">{e.description}</p>
-                <button
-                  onClick={() => deleteSongHandler(e._id)}
-                  className="px-3 py-1 bg-[#333333] text-[#EAEAEA] rounded"
-                >
-                  Delete
-                </button>
-              </div>
+                <CardTitle>{e.title}</CardTitle>
+                <CardText>{e.singer}</CardText>
+                <CardText>{e.description}</CardText>
+                <Button onClick={() => deleteSongHandler(e._id)}>Delete</Button>
+              </Card>
             ))}
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 
